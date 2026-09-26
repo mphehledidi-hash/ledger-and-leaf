@@ -175,7 +175,7 @@ a, button, [data-magnetic], .work-tile, .service-card { cursor: none; }
     top: 0; left: 0;
     width: 100%;
     z-index: 1000;
-    padding: 18px 48px;
+    padding: 26px 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -188,19 +188,41 @@ a, button, [data-magnetic], .work-tile, .service-card { cursor: none; }
 .nav.scrolled {
     border-bottom: 1px solid var(--stone);
     box-shadow: 0 1px 8px rgba(30, 29, 28, 0.04);
-    padding: 14px 48px;
+    padding: 20px 48px;
 }
 .nav-logo {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1;
+    text-decoration: none;
+    gap: 6px;
+    z-index: 1001;
+}
+.nav-logo-main {
     font-family: 'Playfair Display', serif;
-    font-size: 1.7rem;
+    font-size: 1.65rem;
     font-weight: 700;
     color: var(--charcoal);
     letter-spacing: -0.5px;
-    text-decoration: none;
-    z-index: 1001;
+    line-height: 1;
 }
-.nav-logo .ampersand { color: var(--forest); font-style: italic; }
-.nav-logo .leaf-text { color: var(--forest); }
+.nav-logo-main .ampersand { color: var(--forest); font-style: italic; }
+.nav-logo-main .leaf-text { color: var(--forest); }
+.nav-logo-sub {
+    font-family: 'Space Grotesk', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    font-size: 0.52rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    padding-left: 0.32em;
+    line-height: 1;
+    transition: color 0.3s;
+}
+.nav-logo:hover .nav-logo-sub {
+    color: var(--forest);
+}
 .nav-links {
     display: flex;
     gap: 2.4rem;
@@ -365,12 +387,31 @@ section {
 }
 @keyframes preLine { to { width: 110px; } }
 
+/* ============ LOGO & PRELOADER SUBTITLES ============ */
+.preline-sub {
+    font-family: 'Space Grotesk', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.42em;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--forest);
+    opacity: 0;
+    animation: preSubFade 0.8s ease-out forwards;
+    animation-delay: 0.5s;
+    padding-left: 0.42em;
+    margin-top: 0.2rem;
+}
+@keyframes preSubFade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* ============ HERO ============ */
 .hero {
     min-height: 100vh;
     display: flex;
     align-items: center;
-    padding-top: 120px;
+    padding-top: 140px;
     padding-bottom: 100px;
     background: var(--cream);
     position: relative;
@@ -872,7 +913,6 @@ section {
     color: var(--white);
     will-change: transform, box-shadow;
 }
-/* Diagonal sheen highlight — like light hitting glass */
 .service-card::after {
     content: "";
     position: absolute;
@@ -894,7 +934,6 @@ section {
 .service-card:hover::after {
     transform: translateX(30%) rotate(0.01deg);
 }
-/* Top-edge highlight bar — stronger glass cue */
 .service-card::before {
     content: "";
     position: absolute;
@@ -1857,17 +1896,21 @@ section {
     .showcase-strip .marquee span { font-size: 3.2rem; }
 }
 @media (max-width: 768px) {
-    .nav { padding: 14px 24px; }
-    .nav.scrolled { padding: 12px 24px; }
+    .nav { padding: 20px 24px; }
+    .nav.scrolled { padding: 16px 24px; }
     .nav-links { display: none; }
     .hamburger { display: flex; }
     .mobile-menu { display: flex; }
+    .nav-logo { gap: 5px; }
+    .nav-logo-main { font-size: 1.4rem; }
+    .nav-logo-sub { font-size: 0.46rem; letter-spacing: 0.26em; padding-left: 0.26em; }
+    .preline-sub { font-size: 0.62rem; letter-spacing: 0.36em; padding-left: 0.36em; }
     .services-grid { grid-template-columns: 1fr; gap: 22px; }
     .services-grid .service-card:last-child { grid-column: span 1; max-width: none; }
     .work-grid { grid-template-columns: 1fr; gap: 22px; }
     .testimonials-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
-    .hero { padding-top: 90px; min-height: auto; }
+    .hero { padding-top: 110px; min-height: auto; }
     .hero h1 { font-size: clamp(2.8rem, 8vw, 4.2rem); letter-spacing: -2px; }
     .hero-blob { width: 220px; height: 220px; }
     .hero-blob-2 { width: 140px; height: 140px; }
@@ -1919,62 +1962,4 @@ section {
     body, html { cursor: auto; }
     .split-word-inner { transform: none; opacity: 1; }
     .hero-particle { display: none; }
-}
-/* ============ LOGO & PRELOADER SUBTITLES ============ */
-.preline-sub {
-    font-family: 'Space Grotesk', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.42em;
-    font-size: 0.7rem;
-    font-weight: 500;
-    color: var(--forest);
-    opacity: 0;
-    animation: preSubFade 0.8s ease-out forwards;
-    animation-delay: 0.5s;
-    padding-left: 0.42em;
-    margin-top: 0.2rem;
-}
-@keyframes preSubFade {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.nav-logo {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    line-height: 1;
-    text-decoration: none;
-    gap: 3px;
-}
-.nav-logo-main {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.65rem;
-    font-weight: 700;
-    color: var(--charcoal);
-    letter-spacing: -0.5px;
-    line-height: 1;
-}
-.nav-logo-main .ampersand { color: var(--forest); font-style: italic; }
-.nav-logo-main .leaf-text { color: var(--forest); }
-.nav-logo-sub {
-    font-family: 'Space Grotesk', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.32em;
-    font-size: 0.52rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    padding-left: 0.32em;
-    line-height: 1;
-    transition: color 0.3s;
-}
-.nav-logo:hover .nav-logo-sub {
-    color: var(--forest);
-}
-
-/* Mobile logo sizing */
-@media (max-width: 768px) {
-    .nav-logo-main { font-size: 1.4rem; }
-    .nav-logo-sub { font-size: 0.46rem; letter-spacing: 0.26em; padding-left: 0.26em; }
-    .preline-sub { font-size: 0.62rem; letter-spacing: 0.36em; padding-left: 0.36em; }
 }
