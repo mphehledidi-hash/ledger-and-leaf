@@ -67,45 +67,54 @@ body::after {
 h1, h2, h3, h4 { font-weight: 600; }
 
 /* ============ CUSTOM CURSOR ============ */
+body { cursor: none; }
+a, button, [data-magnetic], .work-tile, .service-card { cursor: none; }
+
 .cursor-dot,
 .cursor-ring {
     position: fixed;
     top: 0; left: 0;
     pointer-events: none;
-    z-index: 99999;
+    z-index: 2147483647;
     transform: translate(-50%, -50%);
-    will-change: transform;
+    will-change: transform, left, top;
+    display: block;
 }
 .cursor-dot {
-    width: 6px; height: 6px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     background: var(--forest);
     transition: width 0.2s, height 0.2s, background 0.2s;
 }
 .cursor-ring {
-    width: 36px; height: 36px;
+    width: 38px; height: 38px;
     border: 1.5px solid var(--forest);
     border-radius: 50%;
-    opacity: 0.5;
+    opacity: 0.55;
     transition: width 0.3s, height 0.3s, opacity 0.3s, border-color 0.3s, background 0.3s;
 }
 .cursor-hover .cursor-ring {
     width: 64px; height: 64px;
-    opacity: 0.9;
+    opacity: 0.95;
     border-color: var(--forest);
-    background: rgba(0, 49, 30, 0.06);
+    background: rgba(0, 49, 30, 0.08);
 }
 .cursor-hover .cursor-dot {
     background: var(--forest-light);
-    width: 8px; height: 8px;
+    width: 10px; height: 10px;
 }
+
+/* Only hide custom cursor on REAL touch-only devices */
 @media (hover: none) and (pointer: coarse) {
+    body, a, button, [data-magnetic], .work-tile, .service-card { cursor: auto !important; }
     .cursor-dot, .cursor-ring { display: none !important; }
-    body, html { cursor: auto; }
 }
-@media (hover: hover) and (pointer: fine) {
-    body, html { cursor: none; }
-    a, button, [data-magnetic] { cursor: none; }
+
+/* Reduced motion: keep cursor visible, just simplify */
+@media (prefers-reduced-motion: reduce) {
+    .cursor-ring { display: none; }
+    .cursor-dot { width: 10px; height: 10px; }
+    body, a, button { cursor: auto !important; }
 }
 
 /* ============ SCROLL PROGRESS ============ */
