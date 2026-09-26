@@ -27,7 +27,6 @@
     --shadow-card-hover: 0 14px 28px rgba(30, 29, 28, 0.12), 0 24px 56px rgba(30, 29, 28, 0.14);
     --shadow-dark-card: 0 8px 24px rgba(0, 0, 0, 0.25), 0 16px 48px rgba(0, 0, 0, 0.30);
     --shadow-dark-card-hover: 0 20px 36px rgba(0, 0, 0, 0.35), 0 32px 72px rgba(0, 0, 0, 0.40);
-    --shadow-hero-card: 0 24px 50px rgba(0, 0, 0, 0.30), 0 10px 20px rgba(0, 0, 0, 0.20);
     --radius-sm: 6px;
     --radius-md: 14px;
     --radius-lg: 22px;
@@ -68,7 +67,7 @@ h1, h2, h3, h4 { font-weight: 600; }
 
 /* ============ CUSTOM CURSOR ============ */
 body { cursor: none; }
-a, button, [data-magnetic], .work-tile, .service-card { cursor: none; }
+a, button, [data-magnetic], .work-tile, .service-card, .deck-item { cursor: none; }
 
 .cursor-dot,
 .cursor-ring {
@@ -104,7 +103,7 @@ a, button, [data-magnetic], .work-tile, .service-card { cursor: none; }
     width: 10px; height: 10px;
 }
 @media (hover: none) and (pointer: coarse) {
-    body, a, button, [data-magnetic], .work-tile, .service-card { cursor: auto !important; }
+    body, a, button, [data-magnetic], .work-tile, .service-card, .deck-item { cursor: auto !important; }
     .cursor-dot, .cursor-ring { display: none !important; }
 }
 
@@ -133,9 +132,7 @@ a, button, [data-magnetic], .work-tile, .service-card { cursor: none; }
     transition: opacity 0.9s cubic-bezier(0.25, 0.8, 0.25, 1.2);
     will-change: opacity;
 }
-.ledger-grid-canvas.active {
-    opacity: 1;
-}
+.ledger-grid-canvas.active { opacity: 1; }
 
 /* ============ SPLIT TEXT REVEAL ============ */
 [data-split-text] { display: inline-block; }
@@ -239,9 +236,7 @@ a, button, [data-magnetic], .work-tile, .service-card { cursor: none; }
     animation-delay: 0.3s;
     max-width: 220px;
 }
-@keyframes preLine {
-    to { width: 220px; }
-}
+@keyframes preLine { to { width: 220px; } }
 
 /* ============ NAVIGATION ============ */
 .nav {
@@ -625,117 +620,228 @@ section {
 }
 .hero-cta-secondary .arrow-down { transition: transform 0.3s; }
 .hero-cta-secondary:hover .arrow-down { transform: translateY(4px); }
+
+/* ============ HERO VISUAL — CARD DECK ============ */
 .hero-visual {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 500px;
+    min-height: 560px;
     z-index: 5;
-    perspective: 1000px;
 }
-.hero-card {
-    background: var(--forest);
-    border-radius: var(--radius-xl);
-    padding: 44px 38px;
-    box-shadow: var(--shadow-hero-card);
+.card-deck-wrap {
     position: relative;
-    z-index: 10;
     width: 100%;
-    max-width: 400px;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px 20px;
     opacity: 0;
-    animation: slideUpFade 0.8s ease-out forwards;
-    animation-delay: 2.8s;
-    overflow: hidden;
-    text-align: center;
+    animation: slideUpFade 0.9s ease-out forwards;
+    animation-delay: 2.7s;
+}
+.card-deck {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    perspective: 1200px;
     transform-style: preserve-3d;
-    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1.2), box-shadow 0.5s;
+    cursor: none;
+    animation: deckFloat 6s ease-in-out infinite;
+}
+@keyframes deckFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+.deck-item {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 176px;
+    height: 250px;
+    margin-left: -88px;
+    margin-top: -125px;
+    background: linear-gradient(155deg, #00311E 0%, #001a0f 100%);
+    border-radius: 16px;
+    padding: 22px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: var(--cream);
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.28),
+        0 2px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    transition:
+        transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.4s ease,
+        border-color 0.4s ease;
+    overflow: hidden;
     will-change: transform;
+    cursor: none;
 }
-.hero-card.tilting {
-    transition: transform 0.15s ease-out, box-shadow 0.3s;
-}
-.hero-card::after {
+.deck-item::before {
     content: "";
     position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.04) 50%, transparent 60%);
-    animation: lightSweep 5s infinite ease-in-out;
+    top: 0; left: 8%; right: 8%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    opacity: 0.6;
     pointer-events: none;
-    z-index: 0;
 }
-@keyframes lightSweep {
-    0%, 100% { transform: translate(-30%, -30%) rotate(45deg); }
-    50% { transform: translate(30%, 30%) rotate(45deg); }
+.deck-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: 16px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    opacity: 0.6;
+    mix-blend-mode: overlay;
 }
-.hero-card-icon {
-    width: 56px; height: 56px;
-    border-radius: var(--radius-md);
+.deck-num {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--ochre);
+    opacity: 0.75;
+    z-index: 2;
+}
+.deck-icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
     background: rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.6rem;
-    margin-bottom: 24px;
     color: #8BC4A0;
-    position: relative;
-    z-index: 1;
-    margin-left: auto;
-    margin-right: auto;
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 2;
+    transition: background 0.4s ease, transform 0.4s ease;
 }
-.hero-card:hover .hero-card-icon {
-    transform: translateZ(30px) rotate(-6deg) scale(1.1);
+.deck-icon svg {
+    width: 18px;
+    height: 18px;
 }
-.hero-card h3 {
+.deck-item:hover .deck-icon {
+    background: rgba(255, 255, 255, 0.14);
+    transform: scale(1.05);
+}
+.deck-item h4 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
+    font-size: 1.15rem;
     font-weight: 600;
     color: var(--white);
-    margin-bottom: 10px;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.4px;
+    line-height: 1.15;
+    margin-bottom: 8px;
     position: relative;
-    z-index: 1;
-    transition: transform 0.5s;
+    z-index: 2;
 }
-.hero-card:hover h3 { transform: translateZ(20px); }
-.hero-card p {
+.deck-item p {
+    font-size: 0.72rem;
+    line-height: 1.5;
     color: var(--white-muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-bottom: 24px;
+    margin-bottom: 14px;
     position: relative;
-    z-index: 1;
-    transition: transform 0.5s;
+    z-index: 2;
 }
-.hero-card:hover p { transform: translateZ(10px); }
-.hero-card-stat {
+.deck-tag {
+    display: inline-block;
+    align-self: flex-start;
+    font-family: 'Space Grotesk', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.54rem;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--white-soft);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    position: relative;
+    z-index: 2;
+}
+.deck-footer {
+    margin-top: 26px;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+}
+.deck-caption {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.10);
-    position: relative;
-    z-index: 1;
-    transition: transform 0.5s;
+    gap: 3px;
+    margin-bottom: 18px;
+    min-height: 40px;
+    transition: opacity 0.3s ease;
 }
-.hero-card:hover .hero-card-stat { transform: translateZ(15px); }
-.hero-card-stat .stat-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 3.2rem;
-    font-weight: 700;
-    color: #8BC4A0;
-    line-height: 1;
-}
-.hero-card-stat .stat-label {
+.deck-caption-label {
     font-family: 'Space Grotesk', sans-serif;
     text-transform: uppercase;
-    letter-spacing: 0.10em;
-    font-size: 0.64rem;
-    color: var(--white-subtle);
+    letter-spacing: 0.18em;
+    font-size: 0.58rem;
+    font-weight: 600;
+    color: var(--ochre);
+    opacity: 0.8;
 }
+.deck-caption-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    letter-spacing: -0.3px;
+}
+.deck-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 49, 30, 0.12);
+    width: 180px;
+    margin: 0 auto;
+}
+.deck-stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--forest);
+    line-height: 1;
+    letter-spacing: -0.8px;
+}
+.deck-stat-label {
+    font-family: 'Space Grotesk', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.56rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+.deck-hint {
+    margin-top: 16px;
+    font-family: 'Space Grotesk', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.56rem;
+    font-weight: 500;
+    color: var(--forest);
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    text-align: center;
+}
+
 .hero-blob {
     position: absolute;
     width: 380px; height: 380px;
@@ -1831,11 +1937,11 @@ section {
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 1024px) {
-    .hero .container { grid-template-columns: 1fr; gap: 50px; text-align: center; }
+    .hero .container { grid-template-columns: 1fr; gap: 60px; text-align: center; }
     .hero-sub { margin: 0 auto 2.4rem; }
     .hero-actions { justify-content: center; }
-    .hero-visual { min-height: 380px; }
-    .hero-card { max-width: 360px; margin: 0 auto; }
+    .hero-visual { min-height: 520px; }
+    .card-deck-wrap { max-width: 100%; }
     .services-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
     .services-grid .service-card:last-child { grid-column: span 2; max-width: 500px; justify-self: center; }
     .work-grid { grid-template-columns: 1fr 1fr; gap: 26px; }
@@ -1860,6 +1966,14 @@ section {
     .nav-logo-sub { font-size: 0.46rem; letter-spacing: 0.26em; padding-left: 0.26em; }
     .preline-sub { font-size: 0.56rem; letter-spacing: 0.36em; padding-left: 0.36em; }
     .preloader-text { font-size: 2rem; }
+    .hero-visual { min-height: 460px; }
+    .card-deck { height: 300px; }
+    .deck-item { width: 160px; height: 228px; margin-left: -80px; margin-top: -114px; padding: 18px 16px; }
+    .deck-item h4 { font-size: 1rem; }
+    .deck-item p { font-size: 0.66rem; margin-bottom: 10px; }
+    .deck-icon { width: 30px; height: 30px; top: 16px; left: 16px; }
+    .deck-icon svg { width: 15px; height: 15px; }
+    .deck-num { top: 16px; right: 16px; font-size: 0.52rem; }
     .services-grid { grid-template-columns: 1fr; gap: 22px; }
     .services-grid .service-card:last-child { grid-column: span 1; max-width: none; }
     .work-grid { grid-template-columns: 1fr; gap: 22px; }
@@ -1892,7 +2006,7 @@ section {
     .hero-blob { width: 160px; height: 160px; }
     .hero-blob-2 { width: 100px; height: 100px; }
     .hero-dot-accent { display: none; }
-    .hero-card-stat .stat-value { font-size: 2.6rem; }
+    .deck-stat-value { font-size: 1.6rem; }
     .stats-grid { grid-template-columns: 1fr; }
     .stat-divider { display: none; }
     .showcase-strip .marquee > span { font-size: 1.8rem; }
@@ -1919,4 +2033,5 @@ section {
     .split-word-inner { transform: none; opacity: 1; }
     .hero-particle { display: none; }
     .ledger-grid-canvas { display: none; }
+    .card-deck { animation: none; }
 }
