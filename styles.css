@@ -621,7 +621,7 @@ section {
 .hero-cta-secondary .arrow-down { transition: transform 0.3s; }
 .hero-cta-secondary:hover .arrow-down { transform: translateY(4px); }
 
-/* ============ HERO VISUAL — CARD DECK ============ */
+/* ============ HERO VISUAL: CARD DECK ============ */
 .hero-visual {
     position: relative;
     display: flex;
@@ -729,10 +729,7 @@ section {
     z-index: 2;
     transition: background 0.4s ease, transform 0.4s ease;
 }
-.deck-icon svg {
-    width: 27px;
-    height: 27px;
-}
+.deck-icon svg { width: 27px; height: 27px; }
 .deck-item:hover .deck-icon {
     background: rgba(255, 255, 255, 0.14);
     transform: scale(1.05);
@@ -1014,7 +1011,7 @@ section {
     height: 1px;
     background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.55) 50%, transparent 100%);
     pointer-events: none;
-    z-index: 4;
+    z-index: 6;
 }
 .service-card.visible { opacity: 1; transform: translateY(0) scale(1); }
 .service-card:hover {
@@ -1028,6 +1025,61 @@ section {
     transform: translateY(-12px);
     z-index: 5;
 }
+
+/* Service card image banner */
+.service-image {
+    position: relative;
+    margin: -48px -38px 28px -38px;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    overflow: hidden;
+    z-index: 2;
+    background: #001a0f;
+}
+.service-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.85s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+}
+.service-card:hover .service-image img {
+    transform: scale(1.06);
+}
+.service-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(0, 20, 12, 0.55) 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+.service-image .service-icon {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    width: 48px;
+    height: 48px;
+    font-size: 1.35rem;
+    margin-bottom: 0;
+    z-index: 2;
+    background: rgba(0, 20, 12, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.30);
+}
+.service-image .scan-line {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    animation: scanLine 4.5s infinite linear;
+    pointer-events: none;
+    z-index: 5;
+}
+@keyframes scanLine { 0% { top: -2px; } 100% { top: 100%; } }
+
 .service-icon {
     width: 58px; height: 58px;
     border-radius: var(--radius-md);
@@ -1035,34 +1087,31 @@ section {
     align-items: center;
     justify-content: center;
     font-size: 1.6rem;
-    margin-bottom: 28px;
     transition: all var(--transition-smooth);
     position: relative;
     z-index: 2;
 }
 .service-card.card-marketing .service-icon,
 .service-card.card-stationery .service-icon {
-    background: rgba(255, 255, 255, 0.07);
     color: var(--ochre-soft);
 }
 .service-card.card-marketing:hover .service-icon {
-    background: rgba(255, 255, 255, 0.14);
-    box-shadow: 0 0 40px rgba(196, 160, 74, 0.24);
-    transform: scale(1.1) rotate(-10deg);
+    background: rgba(0, 20, 12, 0.90);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.40), 0 0 28px rgba(196, 160, 74, 0.35);
+    transform: scale(1.10) rotate(-8deg);
 }
 .service-card.card-stationery:hover .service-icon {
-    background: rgba(255, 255, 255, 0.14);
-    box-shadow: 0 0 40px rgba(196, 160, 74, 0.24);
-    transform: scale(1.1) rotate(10deg);
+    background: rgba(0, 20, 12, 0.90);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.40), 0 0 28px rgba(196, 160, 74, 0.35);
+    transform: scale(1.10) rotate(8deg);
 }
 .service-card.card-web .service-icon {
-    background: rgba(255, 255, 255, 0.07);
     color: #8BC4A0;
 }
 .service-card.card-web:hover .service-icon {
-    background: rgba(255, 255, 255, 0.14);
-    box-shadow: 0 0 40px rgba(139, 196, 160, 0.24);
-    transform: scale(1.1) rotate(-10deg);
+    background: rgba(0, 20, 12, 0.90);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.40), 0 0 28px rgba(139, 196, 160, 0.35);
+    transform: scale(1.10) rotate(-8deg);
 }
 .service-card h3 {
     font-family: 'Playfair Display', serif;
@@ -1099,11 +1148,11 @@ section {
     position: relative;
 }
 .service-card .offering-list li::before {
-    content: "—";
+    content: "";
     position: absolute;
-    left: 0; top: 0;
-    color: var(--white-subtle);
-    font-size: 0.7rem;
+    left: 0; top: 0.55em;
+    width: 8px; height: 1px;
+    background: var(--white-subtle);
 }
 .service-card .offering-list li strong { color: var(--white-soft); font-weight: 500; }
 .service-card .card-tag {
@@ -1161,16 +1210,6 @@ section {
     vertical-align: text-bottom;
 }
 @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-.card-web .scan-line {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-    animation: scanLine 4.5s infinite linear;
-    pointer-events: none;
-    z-index: 3;
-}
-@keyframes scanLine { 0% { top: -2px; } 100% { top: 100%; } }
 .card-web .code-snippet {
     margin-top: 16px;
     padding: 12px 16px;
@@ -1311,9 +1350,6 @@ section {
     position: absolute;
     inset: 0;
     background: rgba(0, 49, 30, 0.82);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     opacity: 0;
     transition: opacity 0.4s ease;
     border-radius: var(--radius-md);
@@ -1321,20 +1357,9 @@ section {
     z-index: 2;
 }
 .work-tile:hover .work-overlay { opacity: 1; }
-.work-overlay span {
-    font-family: 'Space Grotesk', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--white);
-    transform: translateY(10px);
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.work-tile:hover .work-overlay span { transform: translateY(0); }
 .work-label {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: baseline;
     margin-top: 14px;
     padding: 0 4px;
@@ -1349,12 +1374,6 @@ section {
     transition: color 0.3s;
 }
 .work-tile:hover .work-category { color: var(--forest); }
-.work-year {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-}
 
 /* ============ PROCESS IMAGE ============ */
 .process-img-wrap {
@@ -2020,6 +2039,10 @@ section {
     .deck-hint { font-size: 0.7rem; }
     .services-grid { grid-template-columns: 1fr; gap: 22px; }
     .services-grid .service-card:last-child { grid-column: span 1; max-width: none; }
+    .service-card { padding: 34px 26px 30px; }
+    .service-image { margin: -34px -26px 24px -26px; }
+    .service-card h3 { font-size: 1.6rem; }
+    .service-image .service-icon { width: 42px; height: 42px; font-size: 1.15rem; bottom: 14px; left: 14px; }
     .work-grid { grid-template-columns: 1fr; gap: 22px; }
     .testimonials-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -2034,8 +2057,6 @@ section {
     .closer { padding: 100px 24px; }
     .showcase-strip .marquee > span { font-size: 2.4rem; -webkit-text-stroke: 1.4px var(--stone); }
     .showcase-strip .marquee > span.highlight { -webkit-text-stroke: 1.4px var(--forest); }
-    .service-card { padding: 34px 26px 30px; }
-    .service-card h3 { font-size: 1.6rem; }
     .quote-banner { padding: 28px 24px; }
     .footer-grid { grid-template-columns: 1fr; gap: 30px; }
     .work { padding: 100px 0; }
