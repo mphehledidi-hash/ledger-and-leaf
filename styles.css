@@ -984,6 +984,8 @@ section {
     color: var(--white);
     will-change: transform, box-shadow;
     z-index: 10;
+    display: flex;
+    flex-direction: column;
 }
 .service-card::after {
     content: "";
@@ -1035,6 +1037,7 @@ section {
     overflow: hidden;
     z-index: 2;
     background: #001a0f;
+    flex-shrink: 0;
 }
 .service-image img {
     width: 100%;
@@ -1129,7 +1132,7 @@ section {
     font-size: 0.95rem;
     position: relative;
     z-index: 2;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
 }
 .service-card .offering-list {
     list-style: none;
@@ -1137,32 +1140,40 @@ section {
     z-index: 2;
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    margin-bottom: 6px;
+    gap: 10px;
+    margin-bottom: 26px;
 }
 .service-card .offering-list li {
-    font-size: 0.84rem;
+    font-size: 0.83rem;
     color: var(--white-muted);
-    line-height: 1.5;
-    padding-left: 16px;
+    line-height: 1.55;
+    padding-left: 18px;
     position: relative;
 }
 .service-card .offering-list li::before {
     content: "";
     position: absolute;
-    left: 0; top: 0.55em;
-    width: 8px; height: 1px;
-    background: var(--white-subtle);
+    left: 0;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ochre-soft);
+    opacity: 0.75;
 }
-.service-card .offering-list li strong { color: var(--white-soft); font-weight: 500; }
+.service-card .offering-list li strong {
+    color: var(--white);
+    font-weight: 600;
+}
 .service-card .card-tag {
     display: inline-block;
+    align-self: flex-start;
     font-family: 'Space Grotesk', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     font-size: 0.64rem;
     font-weight: 600;
-    margin-top: 22px;
+    margin-top: auto;
     padding: 7px 14px;
     border-radius: 20px;
     transition: all var(--transition-smooth);
