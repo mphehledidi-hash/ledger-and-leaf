@@ -103,14 +103,10 @@ a, button, [data-magnetic], .work-tile, .service-card { cursor: none; }
     background: var(--forest-light);
     width: 10px; height: 10px;
 }
-
-/* Only hide custom cursor on REAL touch-only devices */
 @media (hover: none) and (pointer: coarse) {
     body, a, button, [data-magnetic], .work-tile, .service-card { cursor: auto !important; }
     .cursor-dot, .cursor-ring { display: none !important; }
 }
-
-/* Reduced motion: keep cursor visible, just simplify */
 @media (prefers-reduced-motion: reduce) {
     .cursor-ring { display: none; }
     .cursor-dot { width: 10px; height: 10px; }
@@ -758,7 +754,7 @@ section {
     background: var(--forest);
 }
 
-/* ============ SERVICES ============ */
+/* ============ SERVICES (GLASS) ============ */
 .services {
     padding: 140px 0;
     background: var(--cream-warm);
@@ -792,6 +788,46 @@ section {
     33% { transform: translateY(-18px) rotate(5deg); }
     66% { transform: translateY(8px) rotate(-3deg); }
 }
+
+/* ============ SERVICES GLASS ORBS ============ */
+.services-orbs {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+.services-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.55;
+    animation: orbFloat 20s infinite ease-in-out;
+}
+.services-orb.orb-1 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, #4F8A4B 0%, transparent 70%);
+    top: 10%; left: -8%;
+    animation-delay: 0s;
+}
+.services-orb.orb-2 {
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, #B8973A 0%, transparent 70%);
+    top: 45%; right: -6%;
+    animation-delay: -7s;
+}
+.services-orb.orb-3 {
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, #1A3A42 0%, transparent 70%);
+    bottom: 5%; left: 40%;
+    animation-delay: -13s;
+}
+@keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(40px, -30px) scale(1.08); }
+    66% { transform: translate(-30px, 40px) scale(0.95); }
+}
+
 .services-header {
     text-align: center;
     margin-bottom: 80px;
@@ -814,49 +850,80 @@ section {
     grid-template-columns: repeat(3, 1fr);
     gap: 34px;
 }
+
+/* ============ GLASS SERVICE CARD ============ */
 .service-card {
-    background: var(--forest-card);
+    background: linear-gradient(135deg, rgba(0, 49, 30, 0.72) 0%, rgba(0, 49, 30, 0.52) 100%);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
     border-radius: var(--radius-xl);
     padding: 48px 38px 42px;
-    box-shadow: var(--shadow-dark-card);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.18),
+        0 2px 8px rgba(0, 0, 0, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.04);
     transition: all var(--transition-bounce);
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     opacity: 0;
     transform: translateY(50px) scale(0.95);
     color: var(--white);
+    will-change: transform, box-shadow;
 }
+/* Diagonal sheen highlight — like light hitting glass */
 .service-card::after {
     content: "";
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: -60%; left: -60%;
+    width: 220%; height: 220%;
+    background: linear-gradient(
+        115deg,
+        transparent 42%,
+        rgba(255, 255, 255, 0.08) 48%,
+        rgba(255, 255, 255, 0.14) 50%,
+        rgba(255, 255, 255, 0.08) 52%,
+        transparent 58%
+    );
+    transform: translateX(-30%) rotate(0.01deg);
+    transition: transform 1.1s cubic-bezier(0.25, 0.8, 0.25, 1.2);
     pointer-events: none;
-    z-index: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 100px 100px;
+    z-index: 3;
 }
-.service-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+.service-card:hover::after {
+    transform: translateX(30%) rotate(0.01deg);
+}
+/* Top-edge highlight bar — stronger glass cue */
+.service-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 8%; right: 8%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.55) 50%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 4;
+}
+.service-card.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
 .service-card:hover {
-    background: var(--forest-card-hover);
-    box-shadow: var(--shadow-dark-card-hover);
-    border-color: rgba(255, 255, 255, 0.16);
+    background: linear-gradient(135deg, rgba(0, 49, 30, 0.82) 0%, rgba(0, 49, 30, 0.62) 100%);
+    box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.30),
+        0 4px 12px rgba(0, 0, 0, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.32),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.32);
     transform: translateY(-12px);
     z-index: 5;
 }
-.service-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 55%);
-    pointer-events: none;
-    transition: opacity var(--transition-smooth);
-    z-index: 1;
-}
-.service-card:hover::before { opacity: 0; }
 .service-icon {
     width: 58px; height: 58px;
     border-radius: var(--radius-md);
@@ -954,28 +1021,33 @@ section {
     transition: all var(--transition-smooth);
     position: relative;
     z-index: 2;
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     color: var(--white-soft);
-    border: 1px solid rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 .service-card:hover .card-tag {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.28);
 }
 .card-web .card-tag { animation: tagPulse 3.5s infinite ease-in-out; }
 @keyframes tagPulse {
-    0%, 100% { opacity: 1; border-color: rgba(255, 255, 255, 0.10); }
-    50% { opacity: 0.72; border-color: rgba(255, 255, 255, 0.28); }
+    0%, 100% { opacity: 1; border-color: rgba(255, 255, 255, 0.12); }
+    50% { opacity: 0.72; border-color: rgba(255, 255, 255, 0.30); }
 }
 .card-web .meta-note {
     margin-top: 20px;
     padding: 16px 18px;
-    background: rgba(0, 0, 0, 0.28);
+    background: rgba(0, 0, 0, 0.32);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: var(--radius-sm);
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.84);
     font-style: italic;
-    border-left: 3px solid rgba(255, 255, 255, 0.30);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 3px solid rgba(255, 255, 255, 0.35);
     line-height: 1.6;
     position: relative;
     z-index: 2;
@@ -1004,7 +1076,9 @@ section {
 .card-web .code-snippet {
     margin-top: 16px;
     padding: 12px 16px;
-    background: rgba(0, 0, 0, 0.44);
+    background: rgba(0, 0, 0, 0.52);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border-radius: var(--radius-sm);
     font-family: 'Space Grotesk', monospace;
     font-size: 0.7rem;
@@ -1013,7 +1087,7 @@ section {
     overflow: hidden;
     position: relative;
     z-index: 2;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     counter-reset: line;
 }
 .code-snippet .code-line {
@@ -1038,12 +1112,12 @@ section {
     margin-top: 14px;
     border-radius: var(--radius-sm);
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.10);
     position: relative;
     z-index: 2;
 }
 .mini-browser-bar {
-    background: rgba(0, 0, 0, 0.50);
+    background: rgba(0, 0, 0, 0.55);
     padding: 8px 12px;
     display: flex;
     gap: 6px;
@@ -1054,7 +1128,9 @@ section {
 .mini-browser-dot.yellow { background: #E8A85D; }
 .mini-browser-dot.green { background: #5DB87D; }
 .mini-browser-body {
-    background: var(--cream);
+    background: rgba(228, 219, 196, 0.92);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     padding: 14px 16px;
     font-family: 'Space Grotesk', monospace;
     font-size: 0.62rem;
@@ -1807,6 +1883,10 @@ section {
     .quote-banner { padding: 28px 24px; }
     .footer-grid { grid-template-columns: 1fr; gap: 30px; }
     .work { padding: 100px 0; }
+    .services-orb { filter: blur(60px); }
+    .services-orb.orb-1 { width: 300px; height: 300px; }
+    .services-orb.orb-2 { width: 260px; height: 260px; }
+    .services-orb.orb-3 { width: 240px; height: 240px; }
 }
 @media (max-width: 480px) {
     .hero h1 { font-size: 2.4rem; letter-spacing: -1px; }
