@@ -15,25 +15,25 @@
 </head>
 <body>
 
-    <!-- Custom cursor -->
     <div class="cursor-dot" id="cursorDot"></div>
     <div class="cursor-ring" id="cursorRing"></div>
-
-    <!-- Scroll progress -->
     <div class="scroll-progress" id="scrollProgress"></div>
 
-        <div id="preloader">
-        <div class="preloader-text">
-            <span class="pre-ledger">Ledger</span>
-            <span class="pre-ampersand">&amp;</span>
-            <span class="pre-leaf">Leaf</span>
+    <!-- ============ INK DROP PRELOADER ============ -->
+    <div id="preloader">
+        <div class="ink-blob"></div>
+        <div class="preloader-content">
+            <div class="preloader-text">
+                <span class="pre-ledger">Ledger</span>
+                <span class="pre-ampersand">&amp;</span>
+                <span class="pre-leaf">Leaf</span>
+            </div>
+            <div class="preline-sub">Office Solutions</div>
         </div>
-        <div class="preline-sub">Office Solutions</div>
-        <div class="pre-line"></div>
     </div>
 
     <nav class="nav" id="navbar">
-               <a href="#" class="nav-logo">
+        <a href="#" class="nav-logo">
             <span class="nav-logo-main">Ledger<span class="ampersand">&amp;</span><span class="leaf-text">Leaf</span></span>
             <span class="nav-logo-sub">Office Solutions</span>
         </a>
@@ -57,9 +57,10 @@
     </div>
 
     <section class="hero" id="hero">
-        <div class="hero-bg-pattern"></div>
+        <div class="hero-bg-pattern" id="heroBgPattern"></div>
         <div class="hero-blob" data-parallax-blob></div>
         <div class="hero-blob-2" data-parallax-blob></div>
+        <canvas id="ledgerGrid" class="ledger-grid-canvas"></canvas>
         <div class="hero-particles" id="heroParticles"></div>
         <div class="hero-dot-accent">
             <div class="dot"></div><div class="dot"></div><div class="dot"></div>
@@ -95,9 +96,7 @@
 
     <section class="services" id="services">
         <div class="section-gradient-top"></div>
-        <div class="floating-bg-shape"></div>
-        <div class="floating-bg-shape-2"></div>
-              <div class="services-orbs" aria-hidden="true">
+        <div class="services-orbs" aria-hidden="true">
             <div class="services-orb orb-1"></div>
             <div class="services-orb orb-2"></div>
             <div class="services-orb orb-3"></div>
