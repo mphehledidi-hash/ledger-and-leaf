@@ -13,6 +13,13 @@
 </head>
 <body>
 
+    <!-- Custom cursor -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- Scroll progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
     <div id="preloader">
         <div class="preloader-text">
             <span class="pre-ledger">Ledger</span>
@@ -45,8 +52,9 @@
 
     <section class="hero" id="hero">
         <div class="hero-bg-pattern"></div>
-        <div class="hero-blob"></div>
-        <div class="hero-blob-2"></div>
+        <div class="hero-blob" data-parallax-blob></div>
+        <div class="hero-blob-2" data-parallax-blob></div>
+        <div class="hero-particles" id="heroParticles"></div>
         <div class="hero-dot-accent">
             <div class="dot"></div><div class="dot"></div><div class="dot"></div>
             <div class="dot"></div><div class="dot"></div><div class="dot"></div>
@@ -61,12 +69,12 @@
                 <h1 class="serif"><span class="precision-word">Precision</span><br>meets <span class="growth-word">growth.</span></h1>
                 <p class="hero-sub">We design marketing assets, craft luxury stationery, and build digital experiences that elevate brands from commodity to icon.</p>
                 <div class="hero-actions">
-                    <a href="#services" class="hero-cta"><span>Explore Our Work</span> <span class="arrow" style="font-size:1.2rem;">→</span></a>
-                    <a href="#process" class="hero-cta-secondary"><span>Our Process</span> <span class="arrow-down" style="font-size:1.1rem;">↓</span></a>
+                    <a href="#services" class="hero-cta" data-magnetic><span>Explore Our Work</span> <span class="arrow" style="font-size:1.2rem;">→</span></a>
+                    <a href="#process" class="hero-cta-secondary" data-magnetic><span>Our Process</span> <span class="arrow-down" style="font-size:1.1rem;">↓</span></a>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="hero-card">
+            <div class="hero-visual" id="heroVisual">
+                <div class="hero-card" id="heroCard">
                     <div class="hero-card-icon">&#127760;</div>
                     <h3>Web Design Excellence</h3>
                     <p>You're experiencing our capability firsthand. This site is our flagship case study.</p>
@@ -86,7 +94,7 @@
         <div class="container">
             <div class="services-header">
                 <p class="mono">What We Do</p>
-                <h2 class="serif">Services built for impact.</h2>
+                <h2 class="serif" data-split-text>Services built for impact.</h2>
             </div>
             <div class="services-grid">
                 <div class="service-card card-marketing" data-reveal>
@@ -142,46 +150,64 @@
         <div class="container">
             <div class="work-header">
                 <p class="mono">Selected Work</p>
-                <h2 class="serif">Crafted for real brands.</h2>
+                <h2 class="serif" data-split-text>Crafted for real brands.</h2>
             </div>
             <div class="work-grid">
                 <div class="work-tile" data-reveal>
-                    <div class="img-placeholder">Branded Apparel — Photo</div>
+                    <div class="work-img-wrap">
+                        <div class="img-placeholder">Branded Apparel — Photo</div>
+                        <div class="work-overlay"><span>View Project →</span></div>
+                    </div>
                     <div class="work-label">
                         <span class="work-category">Branded Apparel</span>
                         <span class="work-year">2024</span>
                     </div>
                 </div>
                 <div class="work-tile" data-reveal>
-                    <div class="img-placeholder">Stationery Suite — Photo</div>
+                    <div class="work-img-wrap">
+                        <div class="img-placeholder">Stationery Suite — Photo</div>
+                        <div class="work-overlay"><span>View Project →</span></div>
+                    </div>
                     <div class="work-label">
                         <span class="work-category">Stationery Suite</span>
                         <span class="work-year">2024</span>
                     </div>
                 </div>
                 <div class="work-tile" data-reveal>
-                    <div class="img-placeholder">Marketing Booklet — Photo</div>
+                    <div class="work-img-wrap">
+                        <div class="img-placeholder">Marketing Booklet — Photo</div>
+                        <div class="work-overlay"><span>View Project →</span></div>
+                    </div>
                     <div class="work-label">
                         <span class="work-category">Marketing Booklet</span>
                         <span class="work-year">2024</span>
                     </div>
                 </div>
                 <div class="work-tile" data-reveal>
-                    <div class="img-placeholder">Branded Merch — Photo</div>
+                    <div class="work-img-wrap">
+                        <div class="img-placeholder">Branded Merch — Photo</div>
+                        <div class="work-overlay"><span>View Project →</span></div>
+                    </div>
                     <div class="work-label">
                         <span class="work-category">Branded Merchandise</span>
                         <span class="work-year">2024</span>
                     </div>
                 </div>
                 <div class="work-tile" data-reveal>
-                    <div class="img-placeholder">Web Design — Photo</div>
+                    <div class="work-img-wrap">
+                        <div class="img-placeholder">Web Design — Photo</div>
+                        <div class="work-overlay"><span>View Project →</span></div>
+                    </div>
                     <div class="work-label">
                         <span class="work-category">Web Design</span>
                         <span class="work-year">2024</span>
                     </div>
                 </div>
                 <div class="work-tile" data-reveal>
-                    <div class="img-placeholder">Print Collateral — Photo</div>
+                    <div class="work-img-wrap">
+                        <div class="img-placeholder">Print Collateral — Photo</div>
+                        <div class="work-overlay"><span>View Project →</span></div>
+                    </div>
                     <div class="work-label">
                         <span class="work-category">Print Collateral</span>
                         <span class="work-year">2024</span>
@@ -197,7 +223,7 @@
         <div class="container">
             <div class="testimonials-header">
                 <p class="mono">Client Voices</p>
-                <h2 class="serif">Trusted by ambitious brands.</h2>
+                <h2 class="serif" data-split-text>Trusted by ambitious brands.</h2>
             </div>
             <div class="testimonials-grid">
                 <div class="testimonial-card" data-reveal>
@@ -249,7 +275,7 @@
     <div class="showcase-strip">
         <div class="section-gradient-top"></div>
         <div class="marquee-window">
-            <div class="marquee">
+            <div class="marquee" id="marquee">
                 <span>PRECISION</span><span class="highlight">GROWTH</span>
                 <span>STRUCTURE</span><span class="highlight">CREATIVITY</span>
                 <span>LEDGER</span><span class="highlight">LEAF</span>
@@ -293,7 +319,7 @@
         <div class="container">
             <div class="process-left">
                 <p class="mono">How We Work</p>
-                <h2 class="serif">A process refined to perfection.</h2>
+                <h2 class="serif" data-split-text>A process refined to perfection.</h2>
                 <p>We've distilled our methodology into three precise phases. No wasted motion, no missed details — just deliberate craftsmanship from discovery to delivery.</p>
                 <ul class="process-checklist">
                     <li><span class="check-icon">&#10003;</span> Brand audit & competitive analysis</li>
@@ -343,10 +369,10 @@
         <div class="section-gradient-top"></div>
         <div class="closer-particles" id="closerParticles"></div>
         <div class="container">
-            <h2>Ready for work that commands attention?</h2>
+            <h2 data-split-text>Ready for work that commands attention?</h2>
             <p>Let's discuss how Ledger &amp; Leaf can elevate your brand with precision strategy and creative excellence.</p>
             <div class="closer-divider">Or</div>
-            <a href="mailto:admin@ledgerandleaf.net" class="closer-cta">
+            <a href="mailto:admin@ledgerandleaf.net" class="closer-cta" data-magnetic>
                 <span>Start a Conversation</span> <span class="arrow">→</span>
             </a>
         </div>
