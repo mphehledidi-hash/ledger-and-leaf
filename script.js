@@ -205,7 +205,7 @@
     const typingText = document.getElementById('typingText');
     const typingCursor = document.getElementById('typingCursor');
     const metaNote = document.getElementById('metaNote');
-    const fullText = "You're experiencing our web design capability right now. This site is our case study. Every scroll, every detail — deliberately crafted.";
+    const fullText = "You're experiencing our web design capability right now. This site is our case study. Every scroll, every detail, deliberately crafted.";
     let typingDone = false;
     const typingObserver = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
@@ -347,9 +347,7 @@
         function updateCaption(index) {
             const card = cards[index];
             if (!card || !captionValue) return;
-            const cat = card.dataset.category;
-            const year = card.dataset.year;
-            captionValue.textContent = cat + ' — ' + year;
+            captionValue.textContent = card.dataset.category;
         }
 
         applyStack();
@@ -785,5 +783,5 @@
         }
     })();
 
-    console.log('Ledger & Leaf — Real imagery wired. Precision meets growth.');
+    console.log('Ledger & Leaf | Images wired, em dashes removed.');
 })();
