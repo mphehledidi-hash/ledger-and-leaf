@@ -11,32 +11,57 @@
         }, 1500);
     });
 
-    // ============ CUSTOM CURSOR ============
-    if (!isTouchDevice && !prefersReducedMotion) {
+       // ============ CUSTOM CURSOR ============
+    (function initCursor() {
+        // Skip only on confirmed touch-only devices
+        if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+            return;
+        }
+
         const dot = document.getElementById('cursorDot');
         const ring = document.getElementById('cursorRing');
-        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+        if (!dot || !ring) return;
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let ringX = mouseX;
+        let ringY = mouseY;
+        let hasMoved = false;
+
+        // Position cursor at center initially so it's visible immediately
+        dot.style.left = mouseX + 'px';
+        dot.style.top = mouseY + 'px';
+        ring.style.left = ringX + 'px';
+        ring.style.top = ringY + 'px';
 
         document.addEventListener('mousemove', function (e) {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            if (dot) {
-                dot.style.left = mouseX + 'px';
-                dot.style.top = mouseY + 'px';
-            }
+            hasMoved = true;
+            dot.style.left = mouseX + 'px';
+            dot.style.top = mouseY + 'px';
+        });
+
+        // Hide cursor if it leaves the window
+        document.addEventListener('mouseleave', function () {
+            dot.style.opacity = '0';
+            ring.style.opacity = '0';
+        });
+        document.addEventListener('mouseenter', function () {
+            dot.style.opacity = '1';
+            ring.style.opacity = '0.55';
         });
 
         function animateRing() {
-            ringX += (mouseX - ringX) * 0.15;
-            ringY += (mouseY - ringY) * 0.15;
-            if (ring) {
-                ring.style.left = ringX + 'px';
-                ring.style.top = ringY + 'px';
-            }
+            ringX += (mouseX - ringX) * 0.18;
+            ringY += (mouseY - ringY) * 0.18;
+            ring.style.left = ringX + 'px';
+            ring.style.top = ringY + 'px';
             requestAnimationFrame(animateRing);
         }
         animateRing();
 
+        // Hover state
         const hoverTargets = document.querySelectorAll('a, button, [data-magnetic], .work-tile, .service-card');
         hoverTargets.forEach(function (el) {
             el.addEventListener('mouseenter', function () {
@@ -46,7 +71,7 @@
                 document.body.classList.remove('cursor-hover');
             });
         });
-    }
+    })();
 
     // ============ SCROLL PROGRESS ============
     const scrollProgress = document.getElementById('scrollProgress');
