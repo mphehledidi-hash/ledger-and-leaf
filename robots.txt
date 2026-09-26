@@ -1,0 +1,20 @@
+# robots.txt for Ledger & Leaf Office Solutions
+# https://ledgerandleaf.net
+
+User-agent: *
+Allow: /
+
+# Block admin or draft paths (if you ever create any)
+Disallow: /admin/
+Disallow: /draft/
+
+# Sitemaps
+Sitemap: https://ledgerandleaf.net/sitemap.xml
+Sitemap: https://ledgerandleaf.net/sm.xml
+
+# Crawl-delay for aggressive bots (optional)
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
