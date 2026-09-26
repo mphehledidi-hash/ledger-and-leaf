@@ -51,7 +51,7 @@
         }
         animateRing();
 
-        const hoverTargets = document.querySelectorAll('a, button, [data-magnetic], .work-tile, .service-card');
+        const hoverTargets = document.querySelectorAll('a, button, [data-magnetic], .work-tile, .service-card, .deck-item');
         hoverTargets.forEach(function (el) {
             el.addEventListener('mouseenter', function () {
                 document.body.classList.add('cursor-hover');
@@ -113,18 +113,6 @@
     });
 
     // ============ COUNTERS ============
-    const heroStatCounter = document.getElementById('statCounterHero');
-    let heroStatCounted = false;
-    const heroStatObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-            if (entry.isIntersecting && !heroStatCounted) {
-                heroStatCounted = true;
-                animateCounter(heroStatCounter, 98, '%', 2000);
-            }
-        });
-    }, { threshold: 0.6 });
-    if (heroStatCounter) heroStatObserver.observe(heroStatCounter);
-
     const statNumbers = document.querySelectorAll('.stats-bar .stat-number[data-count]');
     let statsCounted = false;
     const statsObserver = new IntersectionObserver(function (entries) {
@@ -275,25 +263,6 @@
         }
     }
 
-    // ============ HERO CARD 3D TILT ============
-    const heroVisual = document.getElementById('heroVisual');
-    const heroCard = document.getElementById('heroCard');
-    if (heroVisual && heroCard && !isTouchDevice && !prefersReducedMotion) {
-        heroVisual.addEventListener('mousemove', function (e) {
-            const rect = heroVisual.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const rotateX = ((y - rect.height / 2) / (rect.height / 2)) * -8;
-            const rotateY = ((x - rect.width / 2) / (rect.width / 2)) * 8;
-            heroCard.classList.add('tilting');
-            heroCard.style.transform = 'perspective(1000px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
-        });
-        heroVisual.addEventListener('mouseleave', function () {
-            heroCard.classList.remove('tilting');
-            heroCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
-        });
-    }
-
     // ============ HERO BLOB PARALLAX ============
     const parallaxBlobs = document.querySelectorAll('[data-parallax-blob]');
     if (parallaxBlobs.length && !isTouchDevice && !prefersReducedMotion) {
@@ -327,6 +296,138 @@
         });
     }
 
+    // ============ STUDIO CARD DECK ============
+    (function initCardDeck() {
+        const deck = document.getElementById('cardDeck');
+        if (!deck) return;
+        const cards = Array.from(deck.querySelectorAll('.deck-item'));
+        const captionValue = document.getElementById('deckCaptionValue');
+        const hint = document.getElementById('deckHint');
+        if (!cards.length) return;
+
+        const total = cards.length;
+        const center = (total - 1) / 2;
+        let isFanned = false;
+        let isLocked = false;
+        let selectedIndex = 2;
+
+        function getOffsets() {
+            const mobile = window.matchMedia('(max-width: 768px)').matches;
+            return {
+                x: mobile ? 30 : 44,
+                y: mobile ? 6 : 9,
+                rot: mobile ? 5 : 6
+            };
+        }
+
+        function applyStack() {
+            cards.forEach(function (card, i) {
+                const off = i - center;
+                card.style.transform = 'translate(' + (off * 2) + 'px, ' + (off * 3) + 'px) rotate(' + (off * 1.6) + 'deg)';
+                card.style.zIndex = i + 1;
+                card.style.borderColor = '';
+                card.style.boxShadow = '';
+            });
+            isFanned = false;
+        }
+
+        function applyFan() {
+            const o = getOffsets();
+            cards.forEach(function (card, i) {
+                const off = i - center;
+                const x = off * o.x;
+                const y = Math.abs(off) * o.y;
+                const rot = off * o.rot;
+                card.style.transform = 'translate(' + x + 'px, ' + y + 'px) rotate(' + rot + 'deg)';
+                card.style.zIndex = 20 - Math.round(Math.abs(off) * 2);
+            });
+            isFanned = true;
+        }
+
+        function updateCaption(index) {
+            const card = cards[index];
+            if (!card || !captionValue) return;
+            const cat = card.dataset.category;
+            const year = card.dataset.year;
+            captionValue.textContent = cat + ' — ' + year;
+        }
+
+        // Initial state
+        applyStack();
+        updateCaption(selectedIndex);
+
+        // Hover interactions (desktop only)
+        if (!isTouchDevice) {
+            deck.addEventListener('mouseenter', function () {
+                if (isLocked) return;
+                applyFan();
+                if (hint) hint.style.opacity = '0';
+            });
+            deck.addEventListener('mouseleave', function () {
+                if (isLocked) return;
+                applyStack();
+                if (hint) hint.style.opacity = '0.5';
+            });
+        } else {
+            // Mobile: show fanned by default
+            setTimeout(function () {
+                applyFan();
+                if (hint) hint.textContent = 'Tap a card to explore';
+            }, 400);
+        }
+
+        // Click on card: pull forward, hold, return
+        cards.forEach(function (card, i) {
+            card.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (isLocked) return;
+                isLocked = true;
+                selectedIndex = i;
+                updateCaption(i);
+
+                const o = getOffsets();
+                const off = i - center;
+
+                card.style.transition = 'transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, border-color 0.4s ease';
+                card.style.transform = 'translate(' + (off * o.x * 0.5) + 'px, -70px) rotate(0deg) scale(1.06)';
+                card.style.zIndex = 200;
+                card.style.borderColor = 'rgba(184, 151, 58, 0.65)';
+                card.style.boxShadow = '0 34px 60px rgba(0,0,0,0.42), 0 0 0 1px rgba(184,151,58,0.35)';
+
+                setTimeout(function () {
+                    card.style.borderColor = '';
+                    card.style.boxShadow = '';
+                    isLocked = false;
+                    if (isTouchDevice) {
+                        applyFan();
+                    } else if (isFanned) {
+                        applyFan();
+                    } else {
+                        applyStack();
+                    }
+                }, 1500);
+            });
+
+            // Touch: also fan out on tap of the deck itself
+            if (isTouchDevice) {
+                card.addEventListener('touchstart', function () {
+                    if (!isFanned && !isLocked) {
+                        // Reveal the fan first
+                    }
+                }, { passive: true });
+            }
+        });
+
+        // Mobile: tap empty deck space toggles fan
+        if (isTouchDevice) {
+            deck.addEventListener('click', function (e) {
+                if (e.target.closest('.deck-item')) return;
+                if (isFanned) applyStack();
+                else applyFan();
+            });
+        }
+    })();
+
     // ============ LIVING LEDGER GRID — BEHIND TILES, ADAPTIVE COLOR ============
     (function initLedgerGrid() {
         if (prefersReducedMotion) return;
@@ -351,20 +452,16 @@
         const LEAF_DURATION = 3.5;
         const IDLE_TIMEOUT = 1500;
 
-        // Color palettes for the two themes
         const COLOR_FOREST = { r: 0, g: 49, b: 30 };
         const COLOR_CREAM = { r: 228, g: 219, b: 196 };
         const COLOR_OCHRE_FOREST = { r: 150, g: 125, b: 55 };
         const COLOR_OCHRE_CREAM = { r: 200, g: 180, b: 120 };
 
-        // Current (animated) colors
         let currentDotRGB = { r: COLOR_FOREST.r, g: COLOR_FOREST.g, b: COLOR_FOREST.b };
         let currentOchreRGB = { r: COLOR_OCHRE_FOREST.r, g: COLOR_OCHRE_FOREST.g, b: COLOR_OCHRE_FOREST.b };
-        // Targets
         let targetDotRGB = { r: COLOR_FOREST.r, g: COLOR_FOREST.g, b: COLOR_FOREST.b };
         let targetOchreRGB = { r: COLOR_OCHRE_FOREST.r, g: COLOR_OCHRE_FOREST.g, b: COLOR_OCHRE_FOREST.b };
 
-        // Section cache for theme detection
         let sectionRects = [];
         function cacheSectionRects() {
             sectionRects = [];
@@ -441,7 +538,6 @@
             mouse.y = e.clientY;
             mouse.active = true;
             lastMouseMove = performance.now();
-
             if (!isActive) {
                 isActive = true;
                 canvas.classList.add('active');
@@ -462,13 +558,11 @@
             const dt = Math.min((now - lastTime) / 1000, 0.05);
             lastTime = now;
 
-            // ========== IDLE CHECK — fade out when cursor stops ==========
             if (isActive && performance.now() - lastMouseMove > IDLE_TIMEOUT) {
                 isActive = false;
                 canvas.classList.remove('active');
             }
 
-            // ========== THEME DETECTION — smooth color lerp ==========
             if (mouse.active) {
                 const pageY = mouse.y + window.scrollY;
                 const theme = getThemeAtPageY(pageY);
@@ -480,16 +574,14 @@
                     targetOchreRGB = COLOR_OCHRE_FOREST;
                 }
             }
-            // Lerp current colors toward targets (independent of active state, so it always smooths)
-            const LERP_SPEED = 0.08;
-            currentDotRGB.r += (targetDotRGB.r - currentDotRGB.r) * LERP_SPEED;
-            currentDotRGB.g += (targetDotRGB.g - currentDotRGB.g) * LERP_SPEED;
-            currentDotRGB.b += (targetDotRGB.b - currentDotRGB.b) * LERP_SPEED;
-            currentOchreRGB.r += (targetOchreRGB.r - currentOchreRGB.r) * LERP_SPEED;
-            currentOchreRGB.g += (targetOchreRGB.g - currentOchreRGB.g) * LERP_SPEED;
-            currentOchreRGB.b += (targetOchreRGB.b - currentOchreRGB.b) * LERP_SPEED;
+            const LERP = 0.08;
+            currentDotRGB.r += (targetDotRGB.r - currentDotRGB.r) * LERP;
+            currentDotRGB.g += (targetDotRGB.g - currentDotRGB.g) * LERP;
+            currentDotRGB.b += (targetDotRGB.b - currentDotRGB.b) * LERP;
+            currentOchreRGB.r += (targetOchreRGB.r - currentOchreRGB.r) * LERP;
+            currentOchreRGB.g += (targetOchreRGB.g - currentOchreRGB.g) * LERP;
+            currentOchreRGB.b += (targetOchreRGB.b - currentOchreRGB.b) * LERP;
 
-            // ========== LEAF MORPH ==========
             leafTimer += dt;
             if (leafTimer > LEAF_INTERVAL && morphTarget === 0) {
                 morphTarget = 1;
@@ -540,7 +632,6 @@
                 if (influence > 0.05) activeDots.push({ i: i, x: x, y: y, inf: influence });
             }
 
-            // Connective lines
             if (activeDots.length > 1 && activeDots.length < 60) {
                 for (let a = 0; a < activeDots.length; a++) {
                     for (let b = a + 1; b < activeDots.length; b++) {
@@ -561,7 +652,6 @@
                 }
             }
 
-            // Draw dots
             const baseAlpha = 0.10 + morphEase * 0.10;
             for (let i = 0; i < dots.length; i++) {
                 const d = dots[i];
@@ -590,7 +680,6 @@
                 cacheSectionRects();
             }, 150);
         });
-        // Recompute section positions after fonts load and any layout shifts
         window.addEventListener('load', cacheSectionRects);
         setTimeout(cacheSectionRects, 500);
         setTimeout(cacheSectionRects, 1500);
@@ -710,5 +799,5 @@
         }
     })();
 
-    console.log('Ledger & Leaf — Global Ledger Grid · Adaptive color · Behind tiles');
+    console.log('Ledger & Leaf — Studio Card Deck live. Precision meets growth.');
 })();
