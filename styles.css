@@ -621,7 +621,7 @@ section {
 .hero-cta-secondary .arrow-down { transition: transform 0.3s; }
 .hero-cta-secondary:hover .arrow-down { transform: translateY(4px); }
 
-/* ============ HERO VISUAL — CARD DECK (SCALED 50% UP) ============ */
+/* ============ HERO VISUAL — CARD DECK ============ */
 .hero-visual {
     position: relative;
     display: flex;
@@ -1285,23 +1285,32 @@ section {
     border-radius: var(--radius-md);
     overflow: hidden;
     transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1.2), box-shadow 0.5s;
+    aspect-ratio: 4 / 3;
     z-index: 10;
+    background: var(--cream-lighter);
+}
+.work-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.75s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+    z-index: 1;
 }
 .work-tile:hover .work-img-wrap {
     transform: translateY(-8px) scale(1.01);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.20);
 }
-.work-img-wrap .img-placeholder {
-    transition: transform 0.7s cubic-bezier(0.25, 0.8, 0.25, 1.2), border-color 0.3s;
-}
-.work-tile:hover .img-placeholder {
-    transform: scale(1.06);
-    border-color: var(--forest);
+.work-tile:hover .work-image {
+    transform: scale(1.07);
 }
 .work-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 49, 30, 0.85);
+    background: rgba(0, 49, 30, 0.82);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1309,6 +1318,7 @@ section {
     transition: opacity 0.4s ease;
     border-radius: var(--radius-md);
     pointer-events: none;
+    z-index: 2;
 }
 .work-tile:hover .work-overlay { opacity: 1; }
 .work-overlay span {
@@ -1344,6 +1354,26 @@ section {
     font-size: 0.7rem;
     color: var(--text-muted);
     letter-spacing: 0.08em;
+}
+
+/* ============ PROCESS IMAGE ============ */
+.process-img-wrap {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    background: var(--cream-lighter);
+}
+.process-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.9s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+}
+.process-img-wrap:hover .process-image {
+    transform: scale(1.04);
 }
 
 /* ============ TESTIMONIALS ============ */
