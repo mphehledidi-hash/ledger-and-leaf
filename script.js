@@ -18,7 +18,7 @@
     });
 
     function updateActiveNav() {
-        const sections = ['hero', 'services', 'process', 'closer'];
+        const sections = ['hero', 'services', 'work', 'process', 'closer'];
         const navLinks = document.querySelectorAll('#navLinks a');
         let currentSection = 'hero';
         sections.forEach(function (id) {
@@ -111,7 +111,7 @@
             if (entry.isIntersecting) {
                 const allEls = Array.from(revealElements);
                 const index = allEls.indexOf(entry.target);
-                const delay = index * 140;
+                const delay = (index % 3) * 140;
                 setTimeout(function () {
                     entry.target.classList.add('visible');
                 }, delay);
