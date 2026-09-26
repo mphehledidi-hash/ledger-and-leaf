@@ -445,7 +445,7 @@ section {
 }
 .hero .container {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-columns: 1.05fr 0.95fr;
     gap: 60px;
     align-items: center;
 }
@@ -621,23 +621,23 @@ section {
 .hero-cta-secondary .arrow-down { transition: transform 0.3s; }
 .hero-cta-secondary:hover .arrow-down { transform: translateY(4px); }
 
-/* ============ HERO VISUAL — CARD DECK ============ */
+/* ============ HERO VISUAL — CARD DECK (SCALED 50% UP) ============ */
 .hero-visual {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 560px;
+    min-height: 780px;
     z-index: 5;
 }
 .card-deck-wrap {
     position: relative;
     width: 100%;
-    max-width: 460px;
+    max-width: 640px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px 20px 20px;
+    padding: 40px 20px 20px;
     opacity: 0;
     animation: slideUpFade 0.9s ease-out forwards;
     animation-delay: 2.7s;
@@ -645,34 +645,34 @@ section {
 .card-deck {
     position: relative;
     width: 100%;
-    height: 320px;
-    perspective: 1200px;
+    height: 470px;
+    perspective: 1500px;
     transform-style: preserve-3d;
     cursor: none;
     animation: deckFloat 6s ease-in-out infinite;
 }
 @keyframes deckFloat {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+    50% { transform: translateY(-8px); }
 }
 .deck-item {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 176px;
-    height: 250px;
-    margin-left: -88px;
-    margin-top: -125px;
+    width: 264px;
+    height: 375px;
+    margin-left: -132px;
+    margin-top: -187.5px;
     background: linear-gradient(155deg, #00311E 0%, #001a0f 100%);
-    border-radius: 16px;
-    padding: 22px 20px;
+    border-radius: 24px;
+    padding: 33px 30px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     color: var(--cream);
     box-shadow:
-        0 12px 28px rgba(0, 0, 0, 0.28),
-        0 2px 8px rgba(0, 0, 0, 0.15),
+        0 18px 42px rgba(0, 0, 0, 0.30),
+        0 3px 12px rgba(0, 0, 0, 0.16),
         inset 0 1px 0 rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.10);
     transition:
@@ -697,17 +697,17 @@ section {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    border-radius: 16px;
+    border-radius: 24px;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
     opacity: 0.6;
     mix-blend-mode: overlay;
 }
 .deck-num {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 30px;
+    right: 30px;
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.58rem;
+    font-size: 0.87rem;
     font-weight: 600;
     letter-spacing: 0.16em;
     color: var(--ochre);
@@ -716,11 +716,11 @@ section {
 }
 .deck-icon {
     position: absolute;
-    top: 20px;
-    left: 20px;
-    width: 34px;
-    height: 34px;
-    border-radius: 9px;
+    top: 30px;
+    left: 30px;
+    width: 51px;
+    height: 51px;
+    border-radius: 14px;
     background: rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
@@ -730,8 +730,8 @@ section {
     transition: background 0.4s ease, transform 0.4s ease;
 }
 .deck-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 27px;
+    height: 27px;
 }
 .deck-item:hover .deck-icon {
     background: rgba(255, 255, 255, 0.14);
@@ -739,20 +739,20 @@ section {
 }
 .deck-item h4 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
+    font-size: 1.72rem;
     font-weight: 600;
     color: var(--white);
-    letter-spacing: -0.4px;
+    letter-spacing: -0.6px;
     line-height: 1.15;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     position: relative;
     z-index: 2;
 }
 .deck-item p {
-    font-size: 0.72rem;
+    font-size: 1.08rem;
     line-height: 1.5;
     color: var(--white-muted);
-    margin-bottom: 14px;
+    margin-bottom: 21px;
     position: relative;
     z-index: 2;
 }
@@ -762,10 +762,10 @@ section {
     font-family: 'Space Grotesk', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    font-size: 0.54rem;
+    font-size: 0.81rem;
     font-weight: 600;
-    padding: 5px 10px;
-    border-radius: 12px;
+    padding: 8px 15px;
+    border-radius: 18px;
     background: rgba(255, 255, 255, 0.08);
     color: var(--white-soft);
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -773,7 +773,7 @@ section {
     z-index: 2;
 }
 .deck-footer {
-    margin-top: 26px;
+    margin-top: 38px;
     text-align: center;
     position: relative;
     z-index: 10;
@@ -782,23 +782,23 @@ section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
-    margin-bottom: 18px;
-    min-height: 40px;
+    gap: 5px;
+    margin-bottom: 26px;
+    min-height: 58px;
     transition: opacity 0.3s ease;
 }
 .deck-caption-label {
     font-family: 'Space Grotesk', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    font-size: 0.58rem;
+    font-size: 0.87rem;
     font-weight: 600;
     color: var(--ochre);
     opacity: 0.8;
 }
 .deck-caption-value {
     font-family: 'Playfair Display', serif;
-    font-size: 1.05rem;
+    font-size: 1.58rem;
     font-weight: 600;
     color: var(--charcoal);
     letter-spacing: -0.3px;
@@ -807,34 +807,34 @@ section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
-    padding-top: 16px;
+    gap: 3px;
+    padding-top: 24px;
     border-top: 1px solid rgba(0, 49, 30, 0.12);
-    width: 180px;
+    width: 270px;
     margin: 0 auto;
 }
 .deck-stat-value {
     font-family: 'Playfair Display', serif;
-    font-size: 1.9rem;
+    font-size: 2.85rem;
     font-weight: 700;
     color: var(--forest);
     line-height: 1;
-    letter-spacing: -0.8px;
+    letter-spacing: -1.2px;
 }
 .deck-stat-label {
     font-family: 'Space Grotesk', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    font-size: 0.56rem;
+    font-size: 0.84rem;
     font-weight: 600;
     color: var(--text-muted);
 }
 .deck-hint {
-    margin-top: 16px;
+    margin-top: 24px;
     font-family: 'Space Grotesk', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    font-size: 0.56rem;
+    font-size: 0.84rem;
     font-weight: 500;
     color: var(--forest);
     opacity: 0.5;
@@ -1940,7 +1940,7 @@ section {
     .hero .container { grid-template-columns: 1fr; gap: 60px; text-align: center; }
     .hero-sub { margin: 0 auto 2.4rem; }
     .hero-actions { justify-content: center; }
-    .hero-visual { min-height: 520px; }
+    .hero-visual { min-height: 700px; }
     .card-deck-wrap { max-width: 100%; }
     .services-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
     .services-grid .service-card:last-child { grid-column: span 2; max-width: 500px; justify-self: center; }
@@ -1966,14 +1966,28 @@ section {
     .nav-logo-sub { font-size: 0.46rem; letter-spacing: 0.26em; padding-left: 0.26em; }
     .preline-sub { font-size: 0.56rem; letter-spacing: 0.36em; padding-left: 0.36em; }
     .preloader-text { font-size: 2rem; }
-    .hero-visual { min-height: 460px; }
-    .card-deck { height: 300px; }
-    .deck-item { width: 160px; height: 228px; margin-left: -80px; margin-top: -114px; padding: 18px 16px; }
-    .deck-item h4 { font-size: 1rem; }
-    .deck-item p { font-size: 0.66rem; margin-bottom: 10px; }
-    .deck-icon { width: 30px; height: 30px; top: 16px; left: 16px; }
-    .deck-icon svg { width: 15px; height: 15px; }
-    .deck-num { top: 16px; right: 16px; font-size: 0.52rem; }
+    .hero-visual { min-height: 620px; }
+    .card-deck { height: 400px; }
+    .deck-item {
+        width: 224px;
+        height: 320px;
+        margin-left: -112px;
+        margin-top: -160px;
+        padding: 24px 22px;
+        border-radius: 20px;
+    }
+    .deck-item h4 { font-size: 1.4rem; }
+    .deck-item p { font-size: 0.9rem; margin-bottom: 14px; }
+    .deck-icon { width: 42px; height: 42px; top: 22px; left: 22px; border-radius: 12px; }
+    .deck-icon svg { width: 22px; height: 22px; }
+    .deck-num { top: 22px; right: 22px; font-size: 0.72rem; }
+    .deck-tag { font-size: 0.68rem; padding: 6px 12px; }
+    .deck-caption-value { font-size: 1.2rem; }
+    .deck-caption-label { font-size: 0.72rem; }
+    .deck-stat-value { font-size: 2.2rem; }
+    .deck-stat-label { font-size: 0.7rem; }
+    .deck-stat { width: 220px; }
+    .deck-hint { font-size: 0.7rem; }
     .services-grid { grid-template-columns: 1fr; gap: 22px; }
     .services-grid .service-card:last-child { grid-column: span 1; max-width: none; }
     .work-grid { grid-template-columns: 1fr; gap: 22px; }
@@ -2006,7 +2020,24 @@ section {
     .hero-blob { width: 160px; height: 160px; }
     .hero-blob-2 { width: 100px; height: 100px; }
     .hero-dot-accent { display: none; }
-    .deck-stat-value { font-size: 1.6rem; }
+    .hero-visual { min-height: 560px; }
+    .card-deck { height: 360px; }
+    .deck-item {
+        width: 200px;
+        height: 288px;
+        margin-left: -100px;
+        margin-top: -144px;
+        padding: 22px 20px;
+    }
+    .deck-item h4 { font-size: 1.2rem; }
+    .deck-item p { font-size: 0.82rem; margin-bottom: 12px; }
+    .deck-icon { width: 38px; height: 38px; top: 20px; left: 20px; }
+    .deck-icon svg { width: 20px; height: 20px; }
+    .deck-num { top: 20px; right: 20px; font-size: 0.65rem; }
+    .deck-tag { font-size: 0.6rem; padding: 5px 10px; }
+    .deck-stat-value { font-size: 1.9rem; }
+    .deck-stat { width: 200px; }
+    .deck-caption-value { font-size: 1.05rem; }
     .stats-grid { grid-template-columns: 1fr; }
     .stat-divider { display: none; }
     .showcase-strip .marquee > span { font-size: 1.8rem; }
