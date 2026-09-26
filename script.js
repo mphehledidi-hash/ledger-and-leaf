@@ -314,8 +314,8 @@
         function getOffsets() {
             const mobile = window.matchMedia('(max-width: 768px)').matches;
             return {
-                x: mobile ? 30 : 44,
-                y: mobile ? 6 : 9,
+                x: mobile ? 44 : 66,
+                y: mobile ? 10 : 14,
                 rot: mobile ? 5 : 6
             };
         }
@@ -352,11 +352,9 @@
             captionValue.textContent = cat + ' — ' + year;
         }
 
-        // Initial state
         applyStack();
         updateCaption(selectedIndex);
 
-        // Hover interactions (desktop only)
         if (!isTouchDevice) {
             deck.addEventListener('mouseenter', function () {
                 if (isLocked) return;
@@ -369,14 +367,12 @@
                 if (hint) hint.style.opacity = '0.5';
             });
         } else {
-            // Mobile: show fanned by default
             setTimeout(function () {
                 applyFan();
                 if (hint) hint.textContent = 'Tap a card to explore';
             }, 400);
         }
 
-        // Click on card: pull forward, hold, return
         cards.forEach(function (card, i) {
             card.addEventListener('click', function (e) {
                 e.stopPropagation();
@@ -407,18 +403,8 @@
                     }
                 }, 1500);
             });
-
-            // Touch: also fan out on tap of the deck itself
-            if (isTouchDevice) {
-                card.addEventListener('touchstart', function () {
-                    if (!isFanned && !isLocked) {
-                        // Reveal the fan first
-                    }
-                }, { passive: true });
-            }
         });
 
-        // Mobile: tap empty deck space toggles fan
         if (isTouchDevice) {
             deck.addEventListener('click', function (e) {
                 if (e.target.closest('.deck-item')) return;
@@ -428,7 +414,7 @@
         }
     })();
 
-    // ============ LIVING LEDGER GRID — BEHIND TILES, ADAPTIVE COLOR ============
+    // ============ LIVING LEDGER GRID ============
     (function initLedgerGrid() {
         if (prefersReducedMotion) return;
         if (isTouchDevice) return;
@@ -799,5 +785,5 @@
         }
     })();
 
-    console.log('Ledger & Leaf — Studio Card Deck live. Precision meets growth.');
+    console.log('Ledger & Leaf — Real imagery wired. Precision meets growth.');
 })();
