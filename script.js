@@ -327,12 +327,12 @@
         });
     }
 
-    // ============ LIVING LEDGER GRID — GLOBAL ============
+    // ============ LIVING LEDGER GRID — BEHIND TILES, ADAPTIVE COLOR ============
     (function initLedgerGrid() {
         if (prefersReducedMotion) return;
+        if (isTouchDevice) return;
         const canvas = document.getElementById('ledgerGrid');
         if (!canvas) return;
-        if (isTouchDevice) return;
 
         const ctx = canvas.getContext('2d');
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -345,12 +345,46 @@
         let rafId = null;
 
         const SPACING = 38;
-        const MOUSE_RADIUS = 140;
+        const MOUSE_RADIUS = 150;
         const LINE_RADIUS = 140;
-        const DOT_RGB = '72, 118, 82';
-        const OCHRE_RGB = '150, 125, 55';
         const LEAF_INTERVAL = 18;
         const LEAF_DURATION = 3.5;
+        const IDLE_TIMEOUT = 1500;
+
+        // Color palettes for the two themes
+        const COLOR_FOREST = { r: 0, g: 49, b: 30 };
+        const COLOR_CREAM = { r: 228, g: 219, b: 196 };
+        const COLOR_OCHRE_FOREST = { r: 150, g: 125, b: 55 };
+        const COLOR_OCHRE_CREAM = { r: 200, g: 180, b: 120 };
+
+        // Current (animated) colors
+        let currentDotRGB = { r: COLOR_FOREST.r, g: COLOR_FOREST.g, b: COLOR_FOREST.b };
+        let currentOchreRGB = { r: COLOR_OCHRE_FOREST.r, g: COLOR_OCHRE_FOREST.g, b: COLOR_OCHRE_FOREST.b };
+        // Targets
+        let targetDotRGB = { r: COLOR_FOREST.r, g: COLOR_FOREST.g, b: COLOR_FOREST.b };
+        let targetOchreRGB = { r: COLOR_OCHRE_FOREST.r, g: COLOR_OCHRE_FOREST.g, b: COLOR_OCHRE_FOREST.b };
+
+        // Section cache for theme detection
+        let sectionRects = [];
+        function cacheSectionRects() {
+            sectionRects = [];
+            document.querySelectorAll('[data-theme]').forEach(function (el) {
+                const rect = el.getBoundingClientRect();
+                sectionRects.push({
+                    top: rect.top + window.scrollY,
+                    bottom: rect.bottom + window.scrollY,
+                    theme: el.getAttribute('data-theme')
+                });
+            });
+        }
+
+        function getThemeAtPageY(pageY) {
+            for (let i = 0; i < sectionRects.length; i++) {
+                const s = sectionRects[i];
+                if (pageY >= s.top && pageY <= s.bottom) return s.theme;
+            }
+            return 'light';
+        }
 
         function easeInOutCubic(t) {
             return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -365,6 +399,7 @@
             canvas.style.height = height + 'px';
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             buildGrid();
+            cacheSectionRects();
         }
 
         function buildGrid() {
@@ -398,10 +433,19 @@
             }
         }
 
+        let lastMouseMove = 0;
+        let isActive = false;
+
         function handleMouseMove(e) {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
             mouse.active = true;
+            lastMouseMove = performance.now();
+
+            if (!isActive) {
+                isActive = true;
+                canvas.classList.add('active');
+            }
         }
         function handleMouseLeave() {
             mouse.active = false;
@@ -418,6 +462,34 @@
             const dt = Math.min((now - lastTime) / 1000, 0.05);
             lastTime = now;
 
+            // ========== IDLE CHECK — fade out when cursor stops ==========
+            if (isActive && performance.now() - lastMouseMove > IDLE_TIMEOUT) {
+                isActive = false;
+                canvas.classList.remove('active');
+            }
+
+            // ========== THEME DETECTION — smooth color lerp ==========
+            if (mouse.active) {
+                const pageY = mouse.y + window.scrollY;
+                const theme = getThemeAtPageY(pageY);
+                if (theme === 'dark') {
+                    targetDotRGB = COLOR_CREAM;
+                    targetOchreRGB = COLOR_OCHRE_CREAM;
+                } else {
+                    targetDotRGB = COLOR_FOREST;
+                    targetOchreRGB = COLOR_OCHRE_FOREST;
+                }
+            }
+            // Lerp current colors toward targets (independent of active state, so it always smooths)
+            const LERP_SPEED = 0.08;
+            currentDotRGB.r += (targetDotRGB.r - currentDotRGB.r) * LERP_SPEED;
+            currentDotRGB.g += (targetDotRGB.g - currentDotRGB.g) * LERP_SPEED;
+            currentDotRGB.b += (targetDotRGB.b - currentDotRGB.b) * LERP_SPEED;
+            currentOchreRGB.r += (targetOchreRGB.r - currentOchreRGB.r) * LERP_SPEED;
+            currentOchreRGB.g += (targetOchreRGB.g - currentOchreRGB.g) * LERP_SPEED;
+            currentOchreRGB.b += (targetOchreRGB.b - currentOchreRGB.b) * LERP_SPEED;
+
+            // ========== LEAF MORPH ==========
             leafTimer += dt;
             if (leafTimer > LEAF_INTERVAL && morphTarget === 0) {
                 morphTarget = 1;
@@ -436,6 +508,14 @@
             ctx.clearRect(0, 0, width, height);
 
             const activeDots = [];
+            const dotR = Math.round(currentDotRGB.r);
+            const dotG = Math.round(currentDotRGB.g);
+            const dotB = Math.round(currentDotRGB.b);
+            const ochreR = Math.round(currentOchreRGB.r);
+            const ochreG = Math.round(currentOchreRGB.g);
+            const ochreB = Math.round(currentOchreRGB.b);
+            const dotRGBStr = dotR + ',' + dotG + ',' + dotB;
+            const ochreRGBStr = ochreR + ',' + ochreG + ',' + ochreB;
 
             for (let i = 0; i < dots.length; i++) {
                 const d = dots[i];
@@ -460,16 +540,17 @@
                 if (influence > 0.05) activeDots.push({ i: i, x: x, y: y, inf: influence });
             }
 
+            // Connective lines
             if (activeDots.length > 1 && activeDots.length < 60) {
                 for (let a = 0; a < activeDots.length; a++) {
                     for (let b = a + 1; b < activeDots.length; b++) {
                         const A = activeDots[a], B = activeDots[b];
-                        const dx = A.x - B.x;
-                        const dy = A.y - B.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        const ddx = A.x - B.x;
+                        const ddy = A.y - B.y;
+                        const dist = Math.sqrt(ddx * ddx + ddy * ddy);
                         if (dist < LINE_RADIUS) {
                             const alpha = (1 - dist / LINE_RADIUS) * 0.35 * Math.min(A.inf, B.inf);
-                            ctx.strokeStyle = 'rgba(' + DOT_RGB + ',' + alpha + ')';
+                            ctx.strokeStyle = 'rgba(' + dotRGBStr + ',' + alpha + ')';
                             ctx.lineWidth = 0.9;
                             ctx.beginPath();
                             ctx.moveTo(A.x, A.y);
@@ -480,16 +561,17 @@
                 }
             }
 
-            const baseAlpha = 0.08 + morphEase * 0.10;
+            // Draw dots
+            const baseAlpha = 0.10 + morphEase * 0.10;
             for (let i = 0; i < dots.length; i++) {
                 const d = dots[i];
-                const alpha = baseAlpha + d.influence * 0.65;
+                const alpha = baseAlpha + d.influence * 0.70;
                 const r = 1 + d.influence * 2.4 + morphEase * 0.3;
 
                 if (d.isOchre) {
-                    ctx.fillStyle = 'rgba(' + OCHRE_RGB + ',' + (alpha * 0.9) + ')';
+                    ctx.fillStyle = 'rgba(' + ochreRGBStr + ',' + (alpha * 0.9) + ')';
                 } else {
-                    ctx.fillStyle = 'rgba(' + DOT_RGB + ',' + alpha + ')';
+                    ctx.fillStyle = 'rgba(' + dotRGBStr + ',' + alpha + ')';
                 }
                 ctx.beginPath();
                 ctx.arc(d.rx, d.ry, r, 0, Math.PI * 2);
@@ -503,8 +585,15 @@
         let resizeTimeout;
         window.addEventListener('resize', function () {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(resize, 150);
+            resizeTimeout = setTimeout(function () {
+                resize();
+                cacheSectionRects();
+            }, 150);
         });
+        // Recompute section positions after fonts load and any layout shifts
+        window.addEventListener('load', cacheSectionRects);
+        setTimeout(cacheSectionRects, 500);
+        setTimeout(cacheSectionRects, 1500);
 
         document.addEventListener('visibilitychange', function () {
             if (document.hidden) {
@@ -621,5 +710,5 @@
         }
     })();
 
-    console.log('Ledger & Leaf — Global Ledger Grid · Refined Preloader · Physics Marquee');
+    console.log('Ledger & Leaf — Global Ledger Grid · Adaptive color · Behind tiles');
 })();
