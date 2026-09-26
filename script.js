@@ -8,7 +8,7 @@
         setTimeout(function () {
             preloader.style.opacity = '0';
             preloader.style.visibility = 'hidden';
-        }, 2450);
+        }, 1950);
     });
 
     // ============ CUSTOM CURSOR ============
@@ -327,45 +327,44 @@
         });
     }
 
-    // ============ LIVING LEDGER GRID ============
+    // ============ LIVING LEDGER GRID — GLOBAL ============
     (function initLedgerGrid() {
         if (prefersReducedMotion) return;
         const canvas = document.getElementById('ledgerGrid');
-        const heroSection = document.getElementById('hero');
-        const bgPattern = document.getElementById('heroBgPattern');
-        if (!canvas || !heroSection) return;
+        if (!canvas) return;
+        if (isTouchDevice) return;
 
         const ctx = canvas.getContext('2d');
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         let width = 0, height = 0;
         let dots = [];
         let mouse = { x: -9999, y: -9999, active: false };
-        let morphTarget = 0; // 0 = grid, 1 = leaf
+        let morphTarget = 0;
         let morphProgress = 0;
         let leafTimer = 0;
         let rafId = null;
 
-        const SPACING = 34;
-        const MOUSE_RADIUS = 130;
-        const LINE_RADIUS = 130;
-        const FOREST = '0, 49, 30';
-        const OCHRE = '184, 151, 58';
+        const SPACING = 38;
+        const MOUSE_RADIUS = 140;
+        const LINE_RADIUS = 140;
+        const DOT_RGB = '72, 118, 82';
+        const OCHRE_RGB = '150, 125, 55';
+        const LEAF_INTERVAL = 18;
+        const LEAF_DURATION = 3.5;
 
         function easeInOutCubic(t) {
             return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         }
 
         function resize() {
-            const rect = heroSection.getBoundingClientRect();
-            width = rect.width;
-            height = rect.height;
+            width = window.innerWidth;
+            height = window.innerHeight;
             canvas.width = width * dpr;
             canvas.height = height * dpr;
             canvas.style.width = width + 'px';
             canvas.style.height = height + 'px';
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             buildGrid();
-            if (bgPattern) bgPattern.classList.add('canvas-active');
         }
 
         function buildGrid() {
@@ -382,10 +381,8 @@
                 for (let j = 0; j < rows; j++) {
                     const gx = offsetX + i * SPACING;
                     const gy = offsetY + j * SPACING;
-                    // Normalized -1..1
                     const nx = (gx - cx) / scale;
                     const ny = (gy - cy) / scale;
-                    // Leaf mapping — squeeze horizontally based on vertical position
                     const v = ny;
                     const h = Math.sin(Math.PI * (v + 1) / 2) * 0.62;
                     const lx = cx + nx * h * scale;
@@ -402,9 +399,8 @@
         }
 
         function handleMouseMove(e) {
-            const rect = heroSection.getBoundingClientRect();
-            mouse.x = e.clientX - rect.left;
-            mouse.y = e.clientY - rect.top;
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
             mouse.active = true;
         }
         function handleMouseLeave() {
@@ -413,10 +409,8 @@
             mouse.y = -9999;
         }
 
-        if (!isTouchDevice) {
-            heroSection.addEventListener('mousemove', handleMouseMove);
-            heroSection.addEventListener('mouseleave', handleMouseLeave);
-        }
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseleave', handleMouseLeave);
 
         let lastTime = performance.now();
 
@@ -424,15 +418,13 @@
             const dt = Math.min((now - lastTime) / 1000, 0.05);
             lastTime = now;
 
-            // Leaf timer — every 9 seconds, morph to leaf and back
             leafTimer += dt;
-            if (leafTimer > 9 && morphTarget === 0) {
+            if (leafTimer > LEAF_INTERVAL && morphTarget === 0) {
                 morphTarget = 1;
-                setTimeout(function () { morphTarget = 0; }, 3500);
+                setTimeout(function () { morphTarget = 0; }, LEAF_DURATION * 1000);
                 leafTimer = 0;
             }
 
-            // Smooth morph
             const morphSpeed = 0.5;
             if (morphProgress < morphTarget) {
                 morphProgress = Math.min(morphProgress + dt * morphSpeed, morphTarget);
@@ -443,22 +435,19 @@
 
             ctx.clearRect(0, 0, width, height);
 
-            // Compute positions
             const activeDots = [];
+
             for (let i = 0; i < dots.length; i++) {
                 const d = dots[i];
-                // Base position (lerp between grid and leaf)
                 let x = d.gx * (1 - morphEase) + d.lx * morphEase;
                 let y = d.gy * (1 - morphEase) + d.ly * morphEase;
 
-                // Mouse influence
                 const dx = x - mouse.x;
                 const dy = y - mouse.y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
                 let influence = 0;
                 if (mouse.active && dist < MOUSE_RADIUS) {
                     influence = 1 - dist / MOUSE_RADIUS;
-                    // Push dots away from mouse
                     const push = influence * influence * 10;
                     if (dist > 0.5) {
                         x += (dx / dist) * push;
@@ -471,7 +460,6 @@
                 if (influence > 0.05) activeDots.push({ i: i, x: x, y: y, inf: influence });
             }
 
-            // Draw connective lines near mouse
             if (activeDots.length > 1 && activeDots.length < 60) {
                 for (let a = 0; a < activeDots.length; a++) {
                     for (let b = a + 1; b < activeDots.length; b++) {
@@ -480,8 +468,8 @@
                         const dy = A.y - B.y;
                         const dist = Math.sqrt(dx * dx + dy * dy);
                         if (dist < LINE_RADIUS) {
-                            const alpha = (1 - dist / LINE_RADIUS) * 0.28 * Math.min(A.inf, B.inf);
-                            ctx.strokeStyle = 'rgba(' + FOREST + ',' + alpha + ')';
+                            const alpha = (1 - dist / LINE_RADIUS) * 0.35 * Math.min(A.inf, B.inf);
+                            ctx.strokeStyle = 'rgba(' + DOT_RGB + ',' + alpha + ')';
                             ctx.lineWidth = 0.9;
                             ctx.beginPath();
                             ctx.moveTo(A.x, A.y);
@@ -492,17 +480,16 @@
                 }
             }
 
-            // Draw dots
-            const baseAlpha = 0.10 + morphEase * 0.12;
+            const baseAlpha = 0.08 + morphEase * 0.10;
             for (let i = 0; i < dots.length; i++) {
                 const d = dots[i];
-                const alpha = baseAlpha + d.influence * 0.75;
-                const r = 1 + d.influence * 2.6 + morphEase * 0.3;
+                const alpha = baseAlpha + d.influence * 0.65;
+                const r = 1 + d.influence * 2.4 + morphEase * 0.3;
 
                 if (d.isOchre) {
-                    ctx.fillStyle = 'rgba(' + OCHRE + ',' + (alpha * 0.9) + ')';
+                    ctx.fillStyle = 'rgba(' + OCHRE_RGB + ',' + (alpha * 0.9) + ')';
                 } else {
-                    ctx.fillStyle = 'rgba(' + FOREST + ',' + alpha + ')';
+                    ctx.fillStyle = 'rgba(' + DOT_RGB + ',' + alpha + ')';
                 }
                 ctx.beginPath();
                 ctx.arc(d.rx, d.ry, r, 0, Math.PI * 2);
@@ -516,39 +503,22 @@
         let resizeTimeout;
         window.addEventListener('resize', function () {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(function () {
-                resize();
-            }, 150);
+            resizeTimeout = setTimeout(resize, 150);
         });
-
-        // Only animate when hero is visible
-        const visObserver = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    if (!rafId) {
-                        lastTime = performance.now();
-                        rafId = requestAnimationFrame(render);
-                    }
-                } else {
-                    if (rafId) {
-                        cancelAnimationFrame(rafId);
-                        rafId = null;
-                    }
-                }
-            });
-        }, { threshold: 0.05 });
-        visObserver.observe(heroSection);
 
         document.addEventListener('visibilitychange', function () {
             if (document.hidden) {
                 if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
             } else {
-                if (!rafId && !prefersReducedMotion) {
+                if (!rafId) {
                     lastTime = performance.now();
                     rafId = requestAnimationFrame(render);
                 }
             }
         });
+
+        lastTime = performance.now();
+        rafId = requestAnimationFrame(render);
     })();
 
     // ============ PHYSICS MARQUEE ============
@@ -556,7 +526,6 @@
         const marquee = document.getElementById('marquee');
         if (!marquee) return;
 
-        // Split each word into letters
         const words = Array.from(marquee.children);
         words.forEach(function (word) {
             const text = word.textContent;
@@ -569,7 +538,6 @@
             }
         });
 
-        // Duplicate content for seamless loop
         marquee.innerHTML += marquee.innerHTML;
 
         const marqueeWindow = marquee.closest('.marquee-window');
@@ -611,14 +579,11 @@
 
             if (marqueeX <= -totalWidth) marqueeX += totalWidth;
 
-            // Physics for letters near cursor
             if (mouseX > -1000 && !isTouchDevice) {
                 const influenceRadius = 90;
                 for (let i = 0; i < letterData.length; i++) {
                     const ld = letterData[i];
-                    // Position of letter in window coords
                     let lx = ld.offset + marqueeX;
-                    // Wrap around
                     const modWidth = totalWidth;
                     while (lx < -100) lx += modWidth;
                     while (lx > modWidth - 100) lx -= modWidth;
@@ -630,13 +595,11 @@
                         const adx = Math.abs(dx);
                         if (adx < influenceRadius) {
                             const strength = 1 - adx / influenceRadius;
-                            // Push letters up, away from cursor
                             ld.targetY = -strength * strength * 28;
                         } else {
                             ld.targetY = 0;
                         }
                     }
-                    // Spring toward target
                     ld.currentY += (ld.targetY - ld.currentY) * 0.18;
                     if (Math.abs(ld.currentY) > 0.05) {
                         ld.el.style.transform = 'translateY(' + ld.currentY + 'px)';
@@ -654,10 +617,9 @@
         if (!prefersReducedMotion) {
             tick();
         } else {
-            // Static fallback
             marquee.style.transform = 'translateX(0)';
         }
     })();
 
-    console.log('Ledger & Leaf — Living Ledger Grid · Ink Drop Preloader · Physics Marquee');
+    console.log('Ledger & Leaf — Global Ledger Grid · Refined Preloader · Physics Marquee');
 })();
